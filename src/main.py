@@ -2,6 +2,9 @@ import os
 import logging
 import sys
 import time
+import yaml
+
+import modules.gui.gui as gui
 
 log_path = "./log"
 data_path = "./data"
@@ -10,16 +13,21 @@ cam_path = modules_path + "/cam"
 gui_path = modules_path + "/gui"
 trace_path = modules_path + "/trace"
 log_file_path = log_path + "/" + time.asctime().replace(' ', '-').replace('--', '-').replace(':', '-') + '.log'
+config_file_path = "./config.yml"
+
+with open('config.yml', 'r') as file:
+    config = yaml.safe_load(file)
 
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler_file = logging.FileHandler(log_file_path)
 handler_stream = logging.StreamHandler(sys.stdout)
-handler_file.setFormatter(formatter)
 handler_stream.setFormatter(formatter)
-logger.addHandler(handler_file)
 logger.addHandler(handler_stream)
 logger.setLevel(logging.INFO)
+if config['file-log'] == True:
+    handler_file = logging.FileHandler(log_file_path)
+    handler_file.setFormatter(formatter)
+    logger.addHandler(handler_file)
 
 def createNewProject():
     name = input("Project Name: ")
@@ -31,7 +39,6 @@ def createNewProject():
     os.mkdir(project_path + '/operates')
     open(project_path + '/config.yml', "w").close()
     
-
 def main():
     traceDatas = os.listdir(data_path)
 

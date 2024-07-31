@@ -72,7 +72,8 @@ class Cam:
             camera.release()
             cv2.destroyWindow("sources")
             
-
+    def getSource(self):
+        return self.source
 
     def calibrate(self, chessBoardShape, imgDir, imgFormat = ".jpg", picCutType = "a"):
         cv2.namedWindow('img', cv2.WINDOW_KEEPRATIO)

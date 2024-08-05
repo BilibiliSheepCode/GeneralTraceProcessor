@@ -2,7 +2,7 @@ from ultralytics import YOLO
 
 class Object_Tracker:
 
-    model = YOLO('yolov8n.yaml').load('yolov8n.pt')
+    model = YOLO('yolov8n.yaml').load('./yolo_models/yolov8n.pt')
 
     def __init__(self) -> None:
         self.source = None
@@ -15,3 +15,4 @@ class Object_Tracker:
             return -1;
         else:
             result =  self.model.track(source = self.source, show = True, tracker = "bytetrack.yaml")
+            return result

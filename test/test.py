@@ -1,19 +1,77 @@
-import logging
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide6.QtCore import Qt
 import sys
-import cam
-import glob
-import cv2
-import os
-import object_tracker
+from modules.gui import gui
 
-camera = cam.Cam()
-camera.setSource()
-model_yolo = object_tracker.Object_Tracker()
-model_yolo.setSource(camera.getSource())
-model_yolo.track()
+
+if __name__ == '__main__':
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
+    window = gui.MainWindow()
+    window.show()
+    app.exec()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import logging
+# import sys
+# import cam
+# import glob
+# import cv2
+# import os
+# import object_tracker
+
+# camera = cam.Cam()
+# camera.setSource()
 # camera.calibrate((7, 7), "./cam_sample", ".jpg", "r")
-# images = glob.glob("./cam_sample/*.jpg")
-# cv2.namedWindow('Result', cv2.WINDOW_KEEPRATIO)
-# cv2.resizeWindow('Result', 800, 600)
-# cv2.imshow('Result', camera.unisort(cam.pictureCut(cv2.imread(images[0]),'r')))
-# cv2.waitKey(10000)
+# f = 0
+# while True:
+#     cap = cv2.VideoCapture(camera.getSource())
+#     (grabbed, img) = cap.read()
+#     img = cam.pictureCut(img, 'r')
+#     img = camera.unisort(img)
+#     model_yolo = object_tracker.Object_Tracker()
+#     model_yolo.setSource(img)
+#     print(f)
+#     result = model_yolo.track()
+#     for r in result:
+#         print(r.boxes.xywh)
+#     f+=1

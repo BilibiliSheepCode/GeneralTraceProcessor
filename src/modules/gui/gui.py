@@ -1,5 +1,14 @@
-from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget)
-from PySide6.QtCore import (Qt, Signal)
+from PySide6.QtWidgets import (QApplication, 
+                               QMainWindow, 
+                               QWidget, 
+                               QFrame, 
+                               QPushButton, 
+                               QStyle, 
+                               QVBoxLayout, 
+                               QLabel)
+from PySide6.QtCore import (Qt, 
+                            Signal)
+from PySide6.QtGui import (QAction)
 
 from modules.file import file
 
@@ -27,11 +36,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
-        self.fileObject = file.File_GTP()
+        self.fileFunctions = file.FileFunctions()
 
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
         self.addAction(self.actionUndo)
         self.addAction(self.actionRedo)
+
+        self.toolList = QFrame(self)
+        self.toolList.setGeometry(0, self.menubar.frameSize().height(), 90, self.frameSize().height() - self.menubar.frameSize().height())
+        self.toolListLayout = QVBoxLayout(self)
+        self.toolListLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.toolListLayout.addWidget(QPushButton('Edit'))
+        self.toolList.setLayout(self.toolListLayout)
 
         self.bind()
 
@@ -39,37 +55,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def bind(self):
         # File-New
-        self.fileNewSignal.connect(self.fileObject.new)
+        self.fileNewSignal.connect(self.fileFunctions.new)
         self.actionNew.triggered.connect(lambda : self.fileNewSignal.emit(self))
 
         # File-Open
-        self.fileOpenSignal.connect(self.fileObject.open)
+        self.fileOpenSignal.connect(self.fileFunctions.open)
         self.actionOpen.triggered.connect(lambda : self.fileOpenSignal.emit(self))
 
         # File-Open Recent
-        self.fileOpenRecentSignal.connect(self.fileObject.openRecent)
+        self.fileOpenRecentSignal.connect(self.fileFunctions.openRecent)
         self.actionOpen_Recent.triggered.connect(lambda : self.fileOpenRecentSignal.emit(self))
 
         # File-Save
-        self.fileSaveSignal.connect(self.fileObject.save)
+        self.fileSaveSignal.connect(self.fileFunctions.save)
         self.actionSave.triggered.connect(lambda : self.fileSaveSignal.emit(self))
 
         # File-Save As
-        self.fileSaveAsSignal.connect(self.fileObject.saveAs)
+        self.fileSaveAsSignal.connect(self.fileFunctions.saveAs)
         self.actionSave_As.triggered.connect(lambda : self.fileSaveAsSignal.emit(self))
 
         # File-Save Copy
-        self.fileSaveCopySignal.connect(self.fileObject.saveCopy)
+        self.fileSaveCopySignal.connect(self.fileFunctions.saveCopy)
         self.actionSave_Copy.triggered.connect(lambda : self.fileSaveCopySignal.emit(self))
 
         # File-Import
-        self.fileImportSignal.connect(self.fileObject.importProject)
+        self.fileImportSignal.connect(self.fileFunctions.importProject)
         self.actionImport.triggered.connect(lambda : self.fileImportSignal.emit(self))
 
         # File-Export
-        self.fileExportSignal.connect(self.fileObject.exportProject)
+        self.fileExportSignal.connect(self.fileFunctions.exportProject)
         self.actionExport.triggered.connect(lambda : self.fileExportSignal.emit(self))
 
         # File-Quit
-        self.fileQuitSignal.connect(self.fileObject.quit)
+        self.fileQuitSignal.connect(self.fileFunctions.quit)
         self.actionQuit.triggered.connect(lambda : self.fileQuitSignal.emit(self))

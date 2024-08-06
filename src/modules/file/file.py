@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (QMainWindow)
 
-class File_GTP():
+class FileFunctions():
     def __init__(self) -> None:
         pass
 

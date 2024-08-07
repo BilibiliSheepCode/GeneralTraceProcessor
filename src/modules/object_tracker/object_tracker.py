@@ -11,7 +11,7 @@ class Object_Tracker:
         self.source = source
 
     def track(self):
-        if self.source == None:
+        if self.source is None:
             return -1;
         else:
             result =  self.model.track(source = self.source, show = True, tracker = "bytetrack.yaml")

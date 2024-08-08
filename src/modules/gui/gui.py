@@ -10,11 +10,11 @@ from PySide6.QtCore import (Qt,
                             Signal)
 from PySide6.QtGui import (QAction)
 
-from modules.file import file
+from modules.gui.funcions.file import file
 
 import sys
 
-from modules.gui.ui.MainWindows_ui import Ui_MainWindow
+from modules.gui.ui.MainWindow.MainWindow_ui import Ui_MainWindow
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     fileNewSignal = Signal(QMainWindow)

@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="icons">
+    <file alias="copy">icons/Copy.png</file>
+    <file alias="delete">icons/Delete.png</file>
+    <file alias="export">icons/Export.png</file>
+    <file alias="gtp">icons/gtp.png</file>
+    <file alias="import">icons/Import.png</file>
+    <file alias="new">icons/New.png</file>
+    <file alias="open">icons/Open.png</file>
+    <file alias="open_recent">icons/Open_Recent.png</file>
+    <file alias="paste">icons/Paste.png</file>
+    <file alias="preference">icons/Preference.png</file>
+    <file alias="quit">icons/Quit.png</file>
+    <file alias="redo">icons/Redo.png</file>
+    <file alias="save">icons/Save.png</file>
+    <file alias="save_as">icons/Save_As.png</file>
+    <file alias="save_copy">icons/Save_Copy.png</file>
+    <file alias="undo">icons/Undo.png</file>
+  </qresource>
+</RCC>

@@ -1,6 +1,7 @@
 import os
 import logging
 import sys
+sys.path.append('./assets')
 import time
 import yaml
 
@@ -32,25 +33,7 @@ from modules.gui import gui
 #     handler_file.setFormatter(formatter)
 #     logger.addHandler(handler_file)
 
-# def createNewProject():
-#     name = input("Project Name: ")
-#     while os.path.exists(data_path + '/' + name):
-#         name = input("Project Existed!\nEnter New Project Name: ")
-#     project_path = data_path + '/' + name
-#     os.mkdir(project_path)
-#     os.mkdir(project_path + '/traceData')
-#     os.mkdir(project_path + '/operates')
-#     open(project_path + '/config.yml', "w").close()
-
 def main():
-    # traceDatas = os.listdir(data_path)
-
-    # if len(traceDatas) == 0:
-    #     logger.info("Creating New Trace Project.")
-    #     createNewProject()
-    # else:
-    #     pass
-
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)

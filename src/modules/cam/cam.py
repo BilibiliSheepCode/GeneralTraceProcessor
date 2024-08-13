@@ -188,7 +188,7 @@ class Cam:
             gray_l.shape[::-1], criteria=criteria, flags=flags)
 
     def rectify(self, img):
-        self.param['R1'], self.param['R2'], self.param['P1'], self.param['P2'], Q, roi1, roi2 = cv2.stereoRectify(self.param['mtx_l'], self.param['dst_l'], self.param['mtx_r'], self.param['dst_r'], self.param['resolution'], self.param['R'], self.param['T'])
+        self.param['R1'], self.param['R2'], self.param['P1'], self.param['P2'], self.param['Q'], self.param['roi1'], self.param['roi2'] = cv2.stereoRectify(self.param['mtx_l'], self.param['dst_l'], self.param['mtx_r'], self.param['dst_r'], self.param['resolution'], self.param['R'], self.param['T'])
         img_l = pictureCut(img, 'l')
         img_r = pictureCut(img, 'r')
         h, w = img_l.shape[:2]
@@ -205,3 +205,24 @@ class Cam:
         dst = cv2.undistort(img, self.param['mtx'], self.param['dst'], None, newcameramtx)
         x,y,w,h = roi
         return dst[y:y+h,x:x+w]
+    
+    def getCoordinate(self, img, px, py):
+        blockSize = 16
+        img_channels = 3
+        sgbm = cv2.StereoSGBM_create(
+            minDisparity=1,
+            numDisparities=128,
+            blockSize=blockSize,
+            P1=8 * img_channels * blockSize * blockSize,
+            P2=32 * img_channels * blockSize * blockSize,
+            disp12MaxDiff=-1,
+            preFilterCap=63,
+            uniquenessRatio=15,
+            speckleWindowSize=100,
+            speckleRange=1,
+            mode=cv2.STEREO_SGBM_MODE_SGBM_3WAY #cv2.STEREO_SGBM_MODE_HH
+        )
+        disparity = sgbm.compute(pictureCut(img, 'l'), pictureCut(img, 'r'))
+        threeD = cv2.reprojectImageTo3D(disparity, self.param['Q'], handleMissingValues=True) * 16
+        return (threeD[py][px][0], threeD[py][px][1], threeD[py][px][2])
+

@@ -7,12 +7,16 @@ from PySide6.QtWidgets import (QApplication,
                                QVBoxLayout, 
                                QLabel)
 from PySide6.QtCore import (Qt, 
-                            Signal)
-from PySide6.QtGui import (QAction)
+                            Signal,
+                            QSize)
+from PySide6.QtGui import (QAction,
+                           QPixmap)
 
 from modules.gui.funcions.file import file
+from modules.gui.funcions.render import render
 
 import sys
+import icon_rc
 
 from modules.gui.ui.MainWindow.MainWindow_ui import Ui_MainWindow
 
@@ -37,17 +41,52 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.fileFunctions = file.FileFunctions()
+        self.pltRender = render.render()
+
+        self.separator = QAction(self)
+        self.separator.setSeparator(True)
 
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
+        self.addAction(self.actionCopy)
+        self.addAction(self.actionPaste)
+        self.addAction(self.actionDelete)
+        self.addAction(self.separator)
         self.addAction(self.actionUndo)
         self.addAction(self.actionRedo)
 
         self.toolList = QFrame(self)
-        self.toolList.setGeometry(0, self.menubar.frameSize().height(), 90, self.frameSize().height() - self.menubar.frameSize().height())
+        self.toolList.setGeometry(0, self.menubar.frameSize().height(), 64, self.frameSize().height() - self.menubar.frameSize().height())
         self.toolListLayout = QVBoxLayout(self)
         self.toolListLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.toolListLayout.addWidget(QPushButton('Edit'))
+        self.buttonCopy = QPushButton(QPixmap(':/icons/copy'), '')
+        self.buttonCopy.setIconSize(QSize(32, 32))
+        self.buttonCopy.clicked.connect(self.actionCopy.trigger)
+
+        self.buttonPaste = QPushButton(QPixmap(':/icons/paste'), '')
+        self.buttonPaste.clicked.connect(self.actionPaste.trigger)
+        self.buttonPaste = QPushButton(QPixmap(':/icons/paste'), '')
+        self.buttonPaste.setIconSize(QSize(32, 32))
+        self.buttonPaste.clicked.connect(self.actionPaste.trigger)
+
+        self.buttonDelete = QPushButton(QPixmap(':/icons/delete'), '')
+        self.buttonDelete.clicked.connect(self.actionDelete.trigger)
+        self.buttonDelete = QPushButton(QPixmap(':/icons/delete'), '')
+        self.buttonDelete.setIconSize(QSize(32, 32))
+        self.buttonDelete.clicked.connect(self.actionDelete.trigger)
+
+        self.toolListLayout.addWidget(self.buttonCopy)
+        self.toolListLayout.addWidget(self.buttonPaste)
+        self.toolListLayout.addWidget(self.buttonDelete)
         self.toolList.setLayout(self.toolListLayout)
+
+        self.renderFrame = QFrame(self)
+        self.renderFrame.setGeometry(64, self.menubar.frameSize().height(), self.frameSize().width() - 64, self.frameSize().height() - self.menubar.frameSize().height())
+        self.renderFrameLayout = QVBoxLayout(self)
+        renderWindow, renderToolBar = self.pltRender.render(self)
+        self.renderFrameLayout.addWidget(renderWindow)
+        self.renderFrameLayout.addWidget(renderToolBar)
+        self.renderFrame.setLayout(self.renderFrameLayout)
+
 
         self.bind()
 

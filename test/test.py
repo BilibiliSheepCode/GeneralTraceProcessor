@@ -6,19 +6,19 @@ import cv2
 import os
 import numpy as np
 import math
-import modules.object_tracker.object_tracker as object_tracker
 
-stereo = cam.Cam(True, './Camera')
-# stereo.param['resolution']=(3840,1080)
+stereo = cam.Cam(True)
+stereo.param['resolution']=(3840,1080)
+stereo.setSource(1)
+stereo.setStoreDir('./Samples')
 # stereo.capture()
-# stereo.calibrate((7, 7), './Samples', '.jpg', 'a')
-# img=cv2.imread('./Samples/0.jpg')
-# imgl,imgr=stereo.rectify(img)
-# cv2.imwrite('l.jpg',imgl)
-# cv2.imwrite('r.jpg',imgr)
+stereo.calibrate((10, 7), './Samples', '.jpg', 'a')
+img=cv2.imread('./Samples/0.jpg')
+imgl,imgr=stereo.rectify(img)
+cv2.imwrite('l.jpg',imgl)
+cv2.imwrite('r.jpg',imgr)
 
-# stereo.setSource(1)
-# # stereo.setStoreDir('./Samples')
+
 # cap = cv2.VideoCapture(camerar.getSource())
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, camerar.param['resolution'][0])
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camerar.param['resolution'][1])
@@ -54,42 +54,42 @@ stereo = cam.Cam(True, './Camera')
 #     f+=1
 
 # 创建 SGBM 视差计算对象
-blockSize = 16
-img_channels = 3
-sgbm = cv2.StereoSGBM_create(
-    minDisparity=1,
-    numDisparities=64,
-    blockSize=blockSize,
-    P1=8 * img_channels * blockSize * blockSize,
-    P2=32 * img_channels * blockSize * blockSize,
-    disp12MaxDiff=-1,
-    preFilterCap=1,
-    uniquenessRatio=10,
-    speckleWindowSize=100,
-    speckleRange=100,
-    mode=cv2.STEREO_SGBM_MODE_HH
-)
-sgbm = cv2.StereoSGBM_create(
-            minDisparity=1,
-            numDisparities=128,
-            blockSize=blockSize,
-            P1=8 * img_channels * blockSize * blockSize,
-            P2=32 * img_channels * blockSize * blockSize,
-            disp12MaxDiff=-1,
-            preFilterCap=63,
-            uniquenessRatio=15,
-            speckleWindowSize=100,
-            speckleRange=1,
-            mode=cv2.STEREO_SGBM_MODE_SGBM_3WAY #cv2.STEREO_SGBM_MODE_HH
-        )
-disparity = sgbm.compute(imgl, imgr)
+# blockSize = 16
+# img_channels = 3
+# sgbm = cv2.StereoSGBM_create(
+#     minDisparity=1,
+#     numDisparities=64,
+#     blockSize=blockSize,
+#     P1=8 * img_channels * blockSize * blockSize,
+#     P2=32 * img_channels * blockSize * blockSize,
+#     disp12MaxDiff=-1,
+#     preFilterCap=1,
+#     uniquenessRatio=10,
+#     speckleWindowSize=100,
+#     speckleRange=100,
+#     mode=cv2.STEREO_SGBM_MODE_HH
+# )
+# sgbm = cv2.StereoSGBM_create(
+#             minDisparity=1,
+#             numDisparities=128,
+#             blockSize=blockSize,
+#             P1=8 * img_channels * blockSize * blockSize,
+#             P2=32 * img_channels * blockSize * blockSize,
+#             disp12MaxDiff=-1,
+#             preFilterCap=63,
+#             uniquenessRatio=15,
+#             speckleWindowSize=100,
+#             speckleRange=1,
+#             mode=cv2.STEREO_SGBM_MODE_SGBM_3WAY #cv2.STEREO_SGBM_MODE_HH
+#         )
+# disparity = sgbm.compute(imgl, imgr)
 
-disp = cv2.normalize(disparity, disparity, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-dis_color = disparity
-dis_color = cv2.normalize(dis_color, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-dis_color = cv2.applyColorMap(dis_color, 2)
-cv2.imwrite("depth.png", dis_color)
-cv2.imwrite('gray.png', disp)
+# disp = cv2.normalize(disparity, disparity, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+# dis_color = disparity
+# dis_color = cv2.normalize(dis_color, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+# dis_color = cv2.applyColorMap(dis_color, 2)
+# cv2.imwrite("depth.png", dis_color)
+# cv2.imwrite('gray.png', disp)
 # threeD = cv2.reprojectImageTo3D(disparity, stereo.param['Q'], handleMissingValues=True)
 # threeD = threeD * 16
 # while True:

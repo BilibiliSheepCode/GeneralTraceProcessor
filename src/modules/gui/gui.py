@@ -128,3 +128,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # File-Quit
         self.fileQuitSignal.connect(self.fileFunctions.quit)
         self.actionQuit.triggered.connect(lambda : self.fileQuitSignal.emit(self))
+

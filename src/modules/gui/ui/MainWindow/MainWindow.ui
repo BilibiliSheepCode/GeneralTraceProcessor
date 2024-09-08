@@ -63,8 +63,24 @@
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
+   <widget class="QMenu" name="menuCamera">
+    <property name="title">
+     <string>Camera</string>
+    </property>
+    <addaction name="actionCameraNew"/>
+    <addaction name="actionCalibrate"/>
+   </widget>
+   <widget class="QMenu" name="menuFitting">
+    <property name="title">
+     <string>Fitting</string>
+    </property>
+    <addaction name="actionLine"/>
+    <addaction name="actionParabola"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuCamera"/>
+   <addaction name="menuFitting"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -224,6 +240,31 @@
    </property>
    <property name="text">
     <string>Delete</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionCameraNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionCalibrate">
+   <property name="text">
+    <string>Calibrate</string>
+   </property>
+  </action>
+  <action name="actionLine">
+   <property name="text">
+    <string>Line</string>
+   </property>
+  </action>
+  <action name="actionParabola">
+   <property name="text">
+    <string>Parabola</string>
    </property>
   </action>
  </widget>

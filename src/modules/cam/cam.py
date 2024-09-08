@@ -21,7 +21,7 @@ class Cam:
         if len(args) == 1:
             self.param = np.load(args[0] + '/param.npy', allow_pickle = True).all()
             points = np.load(args[0] + '/points.npz', allow_pickle = True)
-            self.img_points, self.img_points_l, self.img_points_r, self.obj_points = points.get('arr_0'), points.get('arr_1'), points.get('arr_2'), points.get('arr_3')
+            self.img_points, self.img_points_l, self.img_points_r, self.obj_points, self.obj_points_real = points.get('arr_0'), points.get('arr_1'), points.get('arr_2'), points.get('arr_3'), points.get('arr_4')
             if not os.path.exists(self.param['store_dir']):
                 os.mkdir(self.param['store_dir'])
             return
@@ -46,7 +46,7 @@ class Cam:
         if not os.path.exists(ParamDir):
                 os.mkdir(ParamDir)
         np.save(ParamDir + '/param', self.param)
-        np.savez(ParamDir + '/points', self.img_points, self.img_points_l, self.img_points_r, self.obj_points)
+        np.savez(ParamDir + '/points', self.img_points, self.img_points_l, self.img_points_r, self.obj_points, self.obj_points_real)
     
     def setResolution(self, resolution):
         self.param['resolution'] = resolution
@@ -134,6 +134,7 @@ class Cam:
         self.img_points = [] # 2D points
         self.img_points_l = []
         self.img_points_r = []
+        self.obj_points_real = []
         criteria = (cv2.TERM_CRITERIA_MAX_ITER | cv2.TERM_CRITERIA_EPS, 30, 0.0001)
         objp = np.zeros((chessBoardShape[0] * chessBoardShape[1], 3), np.float32)
         objp[:, :2] = np.mgrid[0:chessBoardShape[0], 0:chessBoardShape[1]].T.reshape(-1, 2)
@@ -167,15 +168,23 @@ class Cam:
                 ret_r, corners_r = cv2.findChessboardCorners(gray_r, (chessBoardShape[0], chessBoardShape[1]), None)
                 print(ret_l, ret_r, filename)
                 if ret_l and ret_r:
-                    self.obj_points.append(objp)
                     corners_l = cv2.cornerSubPix(gray_l, corners_l, ((chessBoardShape[0] - 1) // 2, (chessBoardShape[1] - 1) // 2), (-1, -1), criteria)
                     corners_r = cv2.cornerSubPix(gray_r, corners_r, ((chessBoardShape[0] - 1) // 2, (chessBoardShape[1] - 1) // 2), (-1, -1), criteria)
+                    ret_l, mat, dis, rvecs_l, tvecs_l = cv2.calibrateCamera(np.array([objp]), np.array([corners_l]), size, None, None)
                     self.img_points_l.append(corners_l)
                     self.img_points_r.append(corners_r)
+                    r = np.zeros((3,3))
+                    cv2.Rodrigues(rvecs_l[0],r)
+                    objpr=np.dot(r , objp.T).T + tvecs_l[0].T
+                    objpr = objpr.astype(np.float32)
+                    self.obj_points_real.append(objpr)
+                    self.obj_points.append(objp)
             print(len(self.img_points_l))
             ret_l, self.param['mtx_l'], self.param['dst_l'], rvecs_l, tvecs_l = cv2.calibrateCamera(self.obj_points, self.img_points_l, size, None, None)
             ret_r, self.param['mtx_r'], self.param['dst_r'], rvecs_r, tvecs_r = cv2.calibrateCamera(self.obj_points, self.img_points_r, size, None, None)
-
+            
+            ret_l, self.param['mtx_l'], self.param['dst_l'], rvecs_l, tvecs_l = cv2.calibrateCamera(self.obj_points_real, self.img_points_l, size, self.param['mtx_l'], self.param['dst_l'], flags=cv2.CALIB_USE_INTRINSIC_GUESS)
+            ret_r, self.param['mtx_r'], self.param['dst_r'], rvecs_r, tvecs_r = cv2.calibrateCamera(self.obj_points_real, self.img_points_r, size, self.param['mtx_r'], self.param['dst_r'], flags=cv2.CALIB_USE_INTRINSIC_GUESS)
             flags = cv2.CALIB_FIX_INTRINSIC
             criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_COUNT, 100, 1e-5)
 
